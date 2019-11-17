@@ -65,18 +65,15 @@ describe('/api/people routes', () => {
           Person.create(person2),
           Person.create(person3),
         ]);
-
         // grab the response
         const isAttendingResponse = await request(app).get(
           '/api/people/?is_attending=true'
         );
-
         // test our assertions
         expect(isAttendingResponse.statusCode).toBe(200);
         expect(isAttendingResponse.headers['content-type']).toEqual(
           expect.stringContaining('json')
         );
-
         const attendingPeople = isAttendingResponse.body;
         expect(attendingPeople.length).toBe(2);
         expect(attendingPeople).toEqual(
@@ -111,6 +108,21 @@ describe('/api/people routes', () => {
           Dish.create({ ...dish2, personId: ryan.id }),
         ]);
         // your code below
+        const isBringingDish = await request(app).get(
+          '/api/people/include_dishes=true'
+        );
+        // testing our assertions
+        expect(isBringingDish.statusCode).toBe(200);
+        expect(isBringingDish.headers['content-type']).toEqual(
+          expect.stringContaining('json')
+        );
+        expect(isBringingDish.body.length).toBe(2);
+        expect(isBringingDish.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining(dish1),
+            expect.objectContaining(dish2)
+          ])
+        )
       } catch (err) {
         fail(err);
       }

@@ -8,7 +8,6 @@ const uuidDefinition = {
 	primaryKey: true,
 	defaultValue: UUIDV4
 }; 
-//this will create unique Identifier keys, instead of creating the id as '1,2'3,4'5 and etc/
 
 const Person = db.define('person', {
     id: uuidDefinition,
@@ -19,7 +18,12 @@ const Person = db.define('person', {
     isAttending: {
         type: BOOLEAN,
         allowNull: false,
-        defaultValue: true
+        defaultValue: false,
+    },
+    includeDishes: {
+        type: BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
     }
 });
 

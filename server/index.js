@@ -8,15 +8,14 @@ async function syncAndSeedDatabase() {
 		//  Create some rows in your Person and Dish tables here
 		//  to interact with your API using the `npm run start:watch`
 		//  or `npm run start` commands.
-		const Squad = [
-			{ name: 'Mark', isAttending: true },
+		const People = [
+			{ name: 'Mark', isAttending: true, includeDishes:true },
 			{ name: 'Russell', isAttending: false },
-			{ name: 'Ryan', isAttending: true }
+			{ name: 'Ryan', isAttending: true, includeDishes:true}
 		];
 		const [Mark, Russell, Ryan] = await Promise.all(
-			Squad.map(person => Person.create(person))
+			People.map(person => Person.create(person))
 		);
-
 		const dishes = [
 			{
 				name: 'turkey',

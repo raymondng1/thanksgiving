@@ -22,6 +22,7 @@ describe('/api/people routes', () => {
 
   const dish1 = { name: 'turkey', description: 'delicious briney turkey' };
   const dish2 = { name: 'pie', description: 'delicious pumpkiney pie' };
+
   describe('GET to /api/people', () => {
     // example test using vanilla promise syntax (no async/await)
     it('should retrieve all people if no params are given', () => {
@@ -74,6 +75,7 @@ describe('/api/people routes', () => {
         expect(isAttendingResponse.headers['content-type']).toEqual(
           expect.stringContaining('json')
         );
+        
         const attendingPeople = isAttendingResponse.body;
         expect(attendingPeople.length).toBe(2);
         expect(attendingPeople).toEqual(
@@ -108,40 +110,59 @@ describe('/api/people routes', () => {
           Dish.create({ ...dish2, personId: ryan.id }),
         ]);
         // your code below
-        const isBringingDish = await request(app).get(
-          '/api/people/include_dishes=true'
+        const isBringingDishResponse = await request(app).get(
+          '/api/people/?include_dishes=true'
         );
-        // testing our assertions
-        expect(isBringingDish.statusCode).toBe(200);
-        expect(isBringingDish.headers['content-type']).toEqual(
-          expect.stringContaining('json')
-        );
-        expect(isBringingDish.body.length).toBe(2);
-        expect(isBringingDish.body).toEqual(
+        expect(isBringingDishResponse.statusCode).toBe(200);
+        const bringDish = isBringingDishResponse.body;
+        expect(bringDish.length).toBe(2);
+        expect(bringDish).toEqual(
           expect.arrayContaining([
             expect.objectContaining(dish1),
-            expect.objectContaining(dish2)
+            expect.objectContaining(dish2),
           ])
-        )
+        );
       } catch (err) {
         fail(err);
       }
     });
   });
-  xdescribe('POST to /api/people', () => {
+
+
+  describe('POST to /api/people', () => {
     it('should create a new person and return that persons information if all the required information is given', async () => {
+
       // HINT: You will be sending data then checking response. No pre-seeding required
       // Make sure you test both the API response and whats inside the database anytime you create, update, or delete from the database
+      const addPerson = await request(app)
+        .post('/api/people')
+        .send({
+          name: 'InsertNewName'
+        })
+        const newPerson = await Person.findOne({ name: "InsertNewName" });
+        expect(newPerson.name).toBe("InsertNewName");
+        expect(addPerson.status).toBe(200)
     });
-    it('should return status code 400 if missing required information', async () => {});
+    it('should return status code 400 if missing required information', async () => {  //error handling ???/
+      const addPerson = await request(app)
+      .post('/api/people')
+      .send({
+        name: ""
+      })
+      const newPerson = await Person.findOne({ name: "" });
+      expect(newPerson.status).toThrow("should return status code 400 if missing required information");
+    });
   });
 
-  xdescribe('PUT to /api/people/:id', () => {
-    it('should update a persons information', async () => {});
+  describe('PUT to /api/people/:id', () => {
+    it('should update a persons information', async () => {
+    
+
+    });
     it('should return a 400 if given an invalid id', async () => {});
   });
 
-  xdescribe('DELETE to /api/people/:id', () => {
+  describe('DELETE to /api/people/:id', () => {
     it('should remove a person from the database', async () => {});
     it('should return a 400 if given an invalid id', async () => {});
   });
